@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jul 09, 2021 at 10:55 AM
--- Server version: 10.4.19-MariaDB
--- PHP Version: 8.0.7
+-- Servidor: localhost:3306
+-- Tiempo de generación: 17-07-2025 a las 03:12:36
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `invoice_db`
+-- Base de datos: `invoice_db`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `category_list`
+-- Estructura de tabla para la tabla `category_list`
 --
 
 CREATE TABLE `category_list` (
@@ -34,21 +34,20 @@ CREATE TABLE `category_list` (
   `type` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1 = product, 2 = service',
   `date_created` datetime NOT NULL DEFAULT current_timestamp(),
   `date_updated` datetime DEFAULT NULL ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `category_list`
+-- Volcado de datos para la tabla `category_list`
 --
 
 INSERT INTO `category_list` (`id`, `name`, `description`, `type`, `date_created`, `date_updated`) VALUES
-(1, 'Product Category 101', '&lt;p&gt;Sample Only&lt;/p&gt;', 1, '2021-07-09 10:18:57', NULL),
-(2, 'Product Category 102', '&lt;p&gt;Test 102&lt;/p&gt;', 1, '2021-07-09 10:32:40', '2021-07-09 10:33:01'),
-(4, 'Service 101', '&lt;p&gt;Service 101 Sample Description&lt;/p&gt;', 2, '2021-07-09 10:36:05', NULL);
+(6, 'Productos de Limpieza', '&lt;p&gt;Limpiar, lavar, aseo personal&lt;/p&gt;', 1, '2025-03-11 11:22:58', NULL),
+(7, 'Servicio de Delirery', '&lt;p&gt;Entrega de materiales&lt;/p&gt;', 2, '2025-03-11 11:23:35', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `invoices_items`
+-- Estructura de tabla para la tabla `invoices_items`
 --
 
 CREATE TABLE `invoices_items` (
@@ -59,21 +58,12 @@ CREATE TABLE `invoices_items` (
   `quantity` float NOT NULL,
   `price` float NOT NULL,
   `total` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `invoices_items`
---
-
-INSERT INTO `invoices_items` (`id`, `invoice_id`, `form_id`, `unit`, `quantity`, `price`, `total`) VALUES
-(2, 1, 2, 'boxes', 7, 799.99, 5599.93),
-(3, 2, 1, 'session', 2, 2500, 5000),
-(4, 1, 1, 'boxes', 3, 350.5, 1051.5);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `invoice_list`
+-- Estructura de tabla para la tabla `invoice_list`
 --
 
 CREATE TABLE `invoice_list` (
@@ -87,20 +77,12 @@ CREATE TABLE `invoice_list` (
   `remarks` text NOT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp(),
   `date_updated` datetime DEFAULT NULL ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `invoice_list`
---
-
-INSERT INTO `invoice_list` (`id`, `invoice_code`, `customer_name`, `type`, `sub_total`, `tax_rate`, `total_amount`, `remarks`, `date_created`, `date_updated`) VALUES
-(1, 'Product-2476709', 'John Smith', 1, 42354, 12, 42354, 'Sample Remarks', '2021-07-09 15:36:41', '2021-07-09 16:44:09'),
-(2, 'Service-7629350', 'Claire Blake', 2, 10000, 12, 10000, 'Sample Only', '2021-07-09 16:14:55', NULL);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `product_list`
+-- Estructura de tabla para la tabla `product_list`
 --
 
 CREATE TABLE `product_list` (
@@ -111,20 +93,19 @@ CREATE TABLE `product_list` (
   `price` float NOT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp(),
   `date_updated` datetime DEFAULT NULL ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `product_list`
+-- Volcado de datos para la tabla `product_list`
 --
 
 INSERT INTO `product_list` (`id`, `category_id`, `product`, `description`, `price`, `date_created`, `date_updated`) VALUES
-(1, 1, 'Product 101', '&lt;p&gt;Sample Product only&lt;/p&gt;', 350.5, '2021-07-09 10:58:00', NULL),
-(2, 2, 'Product 102', '&lt;p&gt;Sample Category 102&lt;/p&gt;', 799.99, '2021-07-09 11:13:36', NULL);
+(16, 6, 'Ayudín', '&lt;p&gt;--&lt;/p&gt;', 5, '2025-03-11 11:27:29', '2025-03-11 11:27:46');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `service_list`
+-- Estructura de tabla para la tabla `service_list`
 --
 
 CREATE TABLE `service_list` (
@@ -135,35 +116,35 @@ CREATE TABLE `service_list` (
   `price` float NOT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp(),
   `date_updated` datetime DEFAULT NULL ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `service_list`
+-- Volcado de datos para la tabla `service_list`
 --
 
 INSERT INTO `service_list` (`id`, `category_id`, `service`, `description`, `price`, `date_created`, `date_updated`) VALUES
-(1, 4, 'Service 101', '&lt;p&gt;Sample Service only&lt;/p&gt;', 2500, '2021-07-09 11:20:28', '2021-07-09 11:21:40');
+(4, 7, 'De San Juan a Punchana', '', 20, '2025-03-11 11:40:46', '2025-03-11 11:42:53');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `system_info`
+-- Estructura de tabla para la tabla `system_info`
 --
 
 CREATE TABLE `system_info` (
   `id` int(30) NOT NULL,
   `meta_field` text NOT NULL,
   `meta_value` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `system_info`
+-- Volcado de datos para la tabla `system_info`
 --
 
 INSERT INTO `system_info` (`id`, `meta_field`, `meta_value`) VALUES
-(1, 'name', 'Simple Invoice System'),
-(6, 'short_name', 'Invoice'),
-(11, 'logo', 'uploads/1625795280_logo.jpg'),
+(1, 'name', 'Sistema de Facturación'),
+(6, 'short_name', 'Facturas'),
+(11, 'logo', 'uploads/1741397760_backbone.svg'),
 (13, 'user_avatar', 'uploads/user_avatar.jpg'),
 (14, 'cover', 'uploads/1624240440_banner1.jpg'),
 (15, 'tax_rate', '12');
@@ -171,7 +152,7 @@ INSERT INTO `system_info` (`id`, `meta_field`, `meta_value`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Estructura de tabla para la tabla `users`
 --
 
 CREATE TABLE `users` (
@@ -185,108 +166,107 @@ CREATE TABLE `users` (
   `type` tinyint(1) NOT NULL DEFAULT 0,
   `date_added` datetime NOT NULL DEFAULT current_timestamp(),
   `date_updated` datetime DEFAULT NULL ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Volcado de datos para la tabla `users`
 --
 
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `password`, `avatar`, `last_login`, `type`, `date_added`, `date_updated`) VALUES
-(1, 'Adminstrator', 'Admin', 'admin', '0192023a7bbd73250516f069df18b500', 'uploads/1624240500_avatar.png', NULL, 1, '2021-01-20 14:02:37', '2021-06-21 09:55:07'),
-(4, 'John', 'Smith', 'jsmith', '1254737c076cf867dc53d60a0364f38e', NULL, NULL, 0, '2021-06-19 08:36:09', '2021-06-19 10:53:12'),
-(5, 'Claire', 'Blake', 'cblake', '4744ddea876b11dcb1d169fadf494418', NULL, NULL, 0, '2021-06-19 10:01:51', '2021-06-19 12:03:23');
+(3, 'Danilo', 'Alvarado', 'danilo', '$2y$10$MHQWj579jSdDsltrf4iSlOHnqD1502Q2myTQV/i1YqRGbWxh8RvHu', 'uploads/1741397700_5.jpg', '2025-07-16 19:51:42', 1, '2025-03-07 12:28:27', '2025-07-16 19:51:42');
 
 --
--- Indexes for dumped tables
+-- Índices para tablas volcadas
 --
 
 --
--- Indexes for table `category_list`
+-- Indices de la tabla `category_list`
 --
 ALTER TABLE `category_list`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `invoices_items`
+-- Indices de la tabla `invoices_items`
 --
 ALTER TABLE `invoices_items`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `invoice_list`
+-- Indices de la tabla `invoice_list`
 --
 ALTER TABLE `invoice_list`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `product_list`
+-- Indices de la tabla `product_list`
 --
 ALTER TABLE `product_list`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `service_list`
+-- Indices de la tabla `service_list`
 --
 ALTER TABLE `service_list`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `system_info`
+-- Indices de la tabla `system_info`
 --
 ALTER TABLE `system_info`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `users`
+-- Indices de la tabla `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_username` (`username`) USING HASH;
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT for table `category_list`
+-- AUTO_INCREMENT de la tabla `category_list`
 --
 ALTER TABLE `category_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `invoices_items`
+-- AUTO_INCREMENT de la tabla `invoices_items`
 --
 ALTER TABLE `invoices_items`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT for table `invoice_list`
+-- AUTO_INCREMENT de la tabla `invoice_list`
 --
 ALTER TABLE `invoice_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT for table `product_list`
+-- AUTO_INCREMENT de la tabla `product_list`
 --
 ALTER TABLE `product_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT for table `service_list`
+-- AUTO_INCREMENT de la tabla `service_list`
 --
 ALTER TABLE `service_list`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `system_info`
+-- AUTO_INCREMENT de la tabla `system_info`
 --
 ALTER TABLE `system_info`
   MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
