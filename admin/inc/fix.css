@@ -1,0 +1,7 @@
+@media (max-width: 991.98px) {
+  .sidebar-mini-md .content-wrapper,
+  .sidebar-mini-md .main-footer,
+  .sidebar-mini-md .main-header {
+    margin-left: 0 !important;
+  }
+}

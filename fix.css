@@ -1,0 +1,13 @@
+/* PEGADO EN ADMIN/INC/HEADER.PHP COMO
+  <link rel="stylesheet" href="<?php echo base_url ?>fix.css"> 
+ */
+
+/* PARA EL RESPONSIVO */
+@media (max-width: 991.98px) {
+  .sidebar-mini-md .content-wrapper,
+  .sidebar-mini-md .main-footer,
+  .sidebar-mini-md .main-header {
+    margin-left: 0 !important;
+  }
+}
+
