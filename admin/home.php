@@ -1,4 +1,4 @@
-<h1 class="text-white">🟢<?php echo $_settings->info('name') ?></h1>
+<h1 class="text-white px-2 name"><?php echo $_settings->info('name') ?></h1>
 <hr>
 <section class="content">
     <div class="container-fluid">
