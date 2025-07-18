@@ -1,23 +1,17 @@
+# RENDER USA DOCKER Y NO PHP
 FROM php:8.2-apache
 
-# Instalar extensiones necesarias
+# Instalar extensiones de PHP necesarias
 RUN docker-php-ext-install mysqli
 
-# Activar módulos necesarios de Apache
+# Habilitar módulos de Apache requeridos
 RUN a2enmod rewrite headers
 
-# Copiar tu código fuente
+# Copiar todo tu código al contenedor
 COPY . /var/www/html/
 
-# Establecer permisos
+# Establecer permisos adecuados
 RUN chown -R www-data:www-data /var/www/html
-
-# Crear configuración para permitir .htaccess
-RUN echo '<Directory /var/www/html/>' > /etc/apache2/conf-available/allow-htaccess.conf && \
-    echo '    AllowOverride All' >> /etc/apache2/conf-available/allow-htaccess.conf && \
-    echo '    Require all granted' >> /etc/apache2/conf-available/allow-htaccess.conf && \
-    echo '</Directory>' >> /etc/apache2/conf-available/allow-htaccess.conf && \
-    a2enconf allow-htaccess
 
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html/
