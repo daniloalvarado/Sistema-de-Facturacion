@@ -2,7 +2,7 @@
  lo envia automáticamente a http://localhost/tu-sistema/admin/. -->
 <?php 
 ob_start();
-header("location:admin/");
+header("Location: /admin/?page=home");
 ob_end_clean();
 exit;
 ?>
