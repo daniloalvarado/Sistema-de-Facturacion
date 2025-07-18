@@ -10,4 +10,8 @@
     margin-left: 0 !important;
   }
 }
-
+@media (max-width: 575.98px) {
+  h1.name {
+    text-align: center !important;
+  }
+}
