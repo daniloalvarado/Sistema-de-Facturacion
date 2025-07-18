@@ -1,6 +1,6 @@
 <?php 
 ob_start();
-header("Location: /admin/?page=home");  // Ruta absoluta desde la raíz
+header("location:admin/");
 ob_end_clean();
 exit;
 ?>
