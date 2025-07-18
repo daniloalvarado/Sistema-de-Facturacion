@@ -55,16 +55,15 @@
     }
   })
 </script>
-<footer class="main-footer text-sm">
-        <strong>Copyright © <?php echo date('Y') ?>. 
-        <!-- <a href=""></a> -->
-        </strong>
-        All rights reserved.
-        <div class="float-right d-none d-sm-inline-block">
-          <b><?php echo $_settings->info('short_name') ?> (by: <a href="mailto:oretnom23@gmail.com" target="blank">daniCode</a> )</b> v1.0
-        </div>
-      </footer>
-    </div>
+<footer class="main-footer text-sm d-flex flex-column flex-sm-row justify-content-between align-items-center text-center text-sm-start">
+  <div>
+    <strong>Copyright © <?php echo date('Y') ?>.</strong>
+    All rights reserved.
+  </div>
+  <div class="d-none d-sm-block">
+    <b><?php echo $_settings->info('short_name') ?> (by: <a href="mailto:daniloalvarado2002@gmail.com" target="_blank">daniCode</a>)</b> v1.0
+  </div>
+</footer>
     <!-- ./wrapper -->
    
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
