@@ -10,7 +10,7 @@
   <!-- /.login-logo -->
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <a href="./" class="h1"><b>Iniciar Sesión</b></a>
+      <h1 class="h1"><b>Iniciar Sesión</b></h1>
     </div>
     <div class="card-body">
       <p class="login-box-msg">Escribe tus credenciales</p>
