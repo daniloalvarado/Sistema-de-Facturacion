@@ -36,10 +36,10 @@ if(!defined('dev_data')) define('dev_data',$dev_data);
 // ==========================================================
 // NUEVAS CONSTANTES DE CONEXIÓN (CLEVER CLOUD)
 // ==========================================================
-define('DB_SERVER', 'bj26obu2xeov4c019ku5-mysql.services.clever-cloud.com');
+define('DB_SERVER', 'bj26obu2xeov4c0l9ku5-mysql.services.clever-cloud.com');
 define('DB_USERNAME', 'ugvczllv19rmup3a');
-define('DB_PASSWORD', 'oK3JLHV6SXl1LJZhPaZgE');
-define('DB_NAME', 'bj26obu2xeov4c019ku5');
+define('DB_PASSWORD', 'oK3JLHV6SXlLJZhPaZqE');
+define('DB_NAME', 'bj26obu2xeov4c0l9ku5');
 define('DB_PORT', 3306);
 // ==========================================================
 
