@@ -35,7 +35,7 @@ if(!defined('dev_data')) define('dev_data',$dev_data);
 // ==========================================================
 define('DB_SERVER', 'b0ecjoiz2jpdmx7luq7i-mysql.services.clever-cloud.com');
 define('DB_USERNAME', 'uo8pp47qpjteiacx');
-define('DB_PASSWORD', 'uo8pp47qpjteiacx');
+define('DB_PASSWORD', 'oSuOltyTShpBHlSTh0xJ');
 define('DB_NAME', 'b0ecjoiz2jpdmx7luq7i');
 define('DB_PORT', 3306);
 // ==========================================================
