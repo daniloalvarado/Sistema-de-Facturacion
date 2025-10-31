@@ -1,1 +1,2 @@
 # Sistema-de-Facturación
+Es una plataforma web robusta y confiable diseñada para la administración integral de inventario, catálogo de servicios y procesos de facturación. Construido sobre una arquitectura probada de PHP para el manejo de la lógica de negocio y la base de datos, y complementado con la interactividad de JavaScript (JS), garantiza seguridad, escalabilidad y una experiencia de usuario ágil.
