@@ -47,7 +47,7 @@
 									<td><?php echo $row['invoice_code'] ?></td>
 									<td><?php echo $row['customer_name'] ?></td>
 									<td>
-										<p class="m-0"><small><b>Tipo de Factura:</b> <?php echo $row['type'] == 1 ? "Product" : "Service" ?></small></p>
+										<p class="m-0"><small><b>Tipo de Factura:</b> <?php echo $row['type'] == 1 ? "Producto" : "Servicio" ?></small></p>
 										<p class="m-0"><small><b>Cantidad de Items:</b> <?php echo number_format($items) ?></small></p>
 										<p class="m-0"><small><b>Cantidad Total:</b> <?php echo number_format($row['total_amount']) ?></small></p>
 									</td>
@@ -58,6 +58,7 @@
 										</button>
 										<div class="dropdown-menu" role="menu">
 											<a class="dropdown-item edit_data" href="./?page=invoice/manage&id=<?php echo md5($row['id']) ?>"><span class="fa fa-edit text-primary"></span> Editar</a>
+											<a class="dropdown-item print_invoice" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>" data-code="<?php echo $row['invoice_code'] ?>"><span class="fa fa-download text-success"></span> Descargar</a>
 											<div class="dropdown-divider"></div>
 											<a class="dropdown-item delete_data" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>"><span class="fa fa-trash text-danger"></span> Eliminar</a>
 										</div>
@@ -73,10 +74,51 @@
 </div>
 <script>
 	$(document).ready(function() {
+		// Funcionalidad para el nuevo botón "Descargar"
+		$('.print_invoice').click(function() {
+			var id = $(this).attr('data-id');
+			var code = $(this).attr('data-code');
+
+			// Abre una nueva ventana/pestaña para la impresión
+			var nw = window.open("./invoice/print.php?id=" + id, "_blank", "width=700,height=500");
+
+			if (nw) {
+				// Espera a que la ventana emergente se cargue
+				nw.onload = function() {
+					// Modifica el título de la página para forzar el nombre de archivo de descarga
+					// El nombre será: FACTURA_[CODIGO_DE_FACTURA]
+					nw.document.title = "FACTURA_" + code;
+
+					// Dispara la impresión
+					nw.print();
+
+					// Cierra la ventana después de un breve retraso
+					setTimeout(() => {
+						nw.close();
+					}, 500);
+				};
+			}
+		});
 		$('.delete_data').click(function() {
 			_conf("¿Estás seguro de eliminar esta factura permanentemente?", "delete_invoice", [$(this).attr('data-id')])
 		})
-		$('.table').dataTable();
+		$('.table').dataTable({
+			// AÑADIR ESTA CONFIGURACIÓN DE LENGUAJE
+			"language": {
+				"lengthMenu": "Mostrar _MENU_ entradas", // Show _MENU_ entries
+				"search": "Buscar:", // Search:
+				"info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+				"infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+				"infoFiltered": "(filtrado de _MAX_ entradas totales)",
+				"paginate": {
+					"first": "Primero",
+					"last": "Último",
+					"next": "Siguiente",
+					"previous": "Anterior"
+				},
+				"zeroRecords": "No se encontraron registros coincidentes"
+			}
+		});
 		$('#uni_modal').on('shown.bs.modal', function() {
 			$('.select2').select2({
 				width: 'resolve'
