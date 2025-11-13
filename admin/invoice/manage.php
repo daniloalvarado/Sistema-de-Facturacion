@@ -35,10 +35,30 @@ if (isset($id)) {
 	#item-list td {
 		padding: 5px 3px !important;
 	}
+
+	.table-responsive-scroll {
+		overflow-x: auto;
+		/* Habilita el scroll horizontal si el contenido desborda */
+		width: 100%;
+		/* Asegura que el contenedor ocupe todo el ancho disponible */
+		margin-bottom: 1rem;
+		/* Espaciado inferior */
+	}
+
+	/* Aseguramos que la tabla dentro del contenedor responsive pueda tener un ancho que desborde */
+	.table-responsive-scroll table {
+		min-width: 700px;
+		/* Esto asegura que las 6 columnas mantengan un ancho mínimo legible y fuercen el scroll si la pantalla es más pequeña */
+	}
+
+	#item-list th,
+	#item-list td {
+		padding: 5px 3px !important;
+	}
 </style>
 <div class="card card-outline card-primary">
 	<div class="card-header">
-		<h3 class="card-title"><?php echo !isset($_GET['id']) ? "Nueva factura" : "Edit Invoice" ?></h3>
+		<h3 class="card-title"><?php echo !isset($_GET['id']) ? "Nueva factura" : "Editar Factura" ?></h3>
 	</div>
 	<div class="card-body">
 		<div class="container-fluid">
@@ -48,7 +68,7 @@ if (isset($id)) {
 					<div class="col-md-6">
 						<div class="form-group">
 							<label for="invoice_code" class="control-label">Código de Factura</label>
-							<input type="text" name="invoice_code" value="<?php echo isset($invoice_code) ? $invoice_code : ''; ?>" class="form-control form-control-sm" required>
+							<input type="text" name="invoice_code" id="invoice_code" value="<?php echo isset($invoice_code) ? $invoice_code : ''; ?>" class="form-control form-control-sm" required>
 						</div>
 						<div class="form-group">
 							<label for="customer_name" class="control-label">Nombre del Cliente</label>
@@ -115,7 +135,7 @@ if (isset($id)) {
 					</div>
 					<div class="col-md-2">
 						<div class="form-group">
-							<label for="qty" class="control-label">QTY</label>
+							<label for="qty" class="control-label">Cant.</label>
 							<input type="number" min='1' id="qty" class="form-control text-right">
 						</div>
 					</div>
@@ -127,57 +147,59 @@ if (isset($id)) {
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<table class="table table-bordered" id="item-list">
-							<colgroup>
-								<col width="10%">
-								<col width="15%">
-								<col width="30%">
-								<col width="15%">
-								<col width="15%">
-								<col width="5%">
-							</colgroup>
-							<thead>
-								<tr>
-									<th class="text-center">QTY</th>
-									<th class="text-center">Unidad</th>
-									<th class="text-center">Producto/Servicio</th>
-									<th class="text-center">Costo</th>
-									<th class="text-center">Total</th>
-									<th class="text-center"></th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-							<tfoot>
-								<tr>
-									<th class="text-right" colspan="4">Sub Total</th>
-									<th class="text-right" id="sub_total">S/0</th>
-									<th><input type="hidden" name="sub_total" value="0"></th>
-								</tr>
-								<tr>
-									<th class="text-right" colspan="4">Tax Rate</th>
-									<th class="text-right" id="tax_rate"><?php echo $tax_rate ?>%</th>
-									<th><input type="hidden" name="tax_rate" value="<?php echo $tax_rate ?>"></th>
-								</tr>
-								<tr>
-									<th class="text-right" colspan="4">Tax</th>
-									<th class="text-right" id="tax">0</th>
-									<th></th>
-								</tr>
-								<tr>
-									<th class="text-right" colspan="4">Grand Total</th>
-									<th class="text-right" id="gtotal">0</th>
-									<th><input type="hidden" name="total_amount" value="0"></th>
-								</tr>
-							</tfoot>
-						</table>
+						<div class="table-responsive-scroll">
+							<table class="table table-bordered" id="item-list">
+								<colgroup>
+									<col width="10%">
+									<col width="15%">
+									<col width="30%">
+									<col width="15%">
+									<col width="15%">
+									<col width="5%">
+								</colgroup>
+								<thead>
+									<tr>
+										<th class="text-center">Cant.</th>
+										<th class="text-center">Unidad</th>
+										<th class="text-center">Producto/Servicio</th>
+										<th class="text-center">Costo Unitario</th>
+										<th class="text-center">Total</th>
+										<th class="text-center"></th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+								<tfoot>
+									<tr>
+										<th class="text-right" colspan="4">Subtotal</th>
+										<th class="text-right" id="sub_total">S/ 0</th>
+										<th><input type="hidden" name="sub_total" value="0"></th>
+									</tr>
+									<tr>
+										<th class="text-right" colspan="4">Tasa de Impuestos</th>
+										<th class="text-right" id="tax_rate"><?php echo $tax_rate ?>%</th>
+										<th><input type="hidden" name="tax_rate" value="<?php echo $tax_rate ?>"></th>
+									</tr>
+									<tr>
+										<th class="text-right" colspan="4">Impuesto</th>
+										<th class="text-right" id="tax">S/ 0</th>
+										<th></th>
+									</tr>
+									<tr>
+										<th class="text-right" colspan="4">Total General</th>
+										<th class="text-right" id="gtotal">S/ 0</th>
+										<th><input type="hidden" name="total_amount" value="0"></th>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-7">
 						<div class="form-group">
 							<label for="remarks" class="control-label">Observaciones</label>
-							<textarea name="remarks" id="" cols="30" rows="2" class="form-control form no-resize summernote"><?php echo isset($remarks) ? $remarks : ''; ?></textarea>
+							<textarea name="remarks" id="remarks" cols="30" rows="2" class="form-control form no-resize summernote"><?php echo isset($remarks) ? $remarks : ''; ?></textarea>
 						</div>
 					</div>
 				</div>
@@ -186,6 +208,11 @@ if (isset($id)) {
 		</div>
 		<div class="card-footer">
 			<button class="btn btn-flat btn-sm btn-primary" form="invoice-form">Guardar</button>
+			<?php if (isset($id)): ?>
+				<button class="btn btn-flat btn-sm btn-success" type="button" id="download_invoice">
+					<i class="fa fa-download"></i> Descargar Factura
+				</button>
+			<?php endif; ?>
 			<a class="btn btn-flat btn-sm btn-default" href="./?page=invoice">Cancelar</a>
 		</div>
 	</div>
@@ -226,14 +253,12 @@ if (isset($id)) {
 			total += parseFloat(tr.find('[name="total[]"]').val());
 		})
 		$('[name="sub_total"]').val(total)
-		$('#sub_total').text(parseFloat(total).toLocaleString('en-US'))
+		$('#sub_total').text('S/ ' + parseFloat(total).toLocaleString('en-US'))
 		var tax = parseFloat(total) * parseFloat(tax_rate);
 		var gtotal = parseFloat(tax) + parseFloat(total);
-		$('#tax').text(parseFloat(tax).toLocaleString('en-US'))
-		$('#gtotal').text(parseFloat(gtotal).toLocaleString('en-US'))
+		$('#tax').text('S/ ' + parseFloat(tax).toLocaleString('en-US'))
+		$('#gtotal').text('S/ ' + parseFloat(gtotal).toLocaleString('en-US'))
 		$('[name="total_amount"]').val(gtotal)
-
-
 	}
 
 	function rem_item(_this) {
@@ -330,6 +355,37 @@ if (isset($id)) {
 		end_loader()
 	}
 	$(document).ready(function() {
+
+		// --- Lógica para el botón Descargar Factura (ABRIR IMPRESIÓN) ---
+		$('#download_invoice').click(function() {
+			// Obtenemos el ID y el código de factura de las variables PHP
+			var id = '<?php echo isset($id) ? $id : '' ?>';
+			var code = '<?php echo isset($invoice_code) ? $invoice_code : '' ?>';
+
+			if (id && code) {
+				// 1. Abre la ventana/pestaña con el contenido de la factura
+				var nw = window.open("./invoice/print.php?id=" + id, "_blank", "width=700,height=500");
+
+				if (nw) {
+					// 2. Espera a que la ventana emergente se cargue
+					nw.onload = function() {
+						// 3. Modifica el título para forzar el nombre de archivo (ej: FACTURA_A1001)
+						nw.document.title = "FACTURA_" + code;
+
+						// 4. Dispara la ventana de impresión
+						nw.print();
+
+						// 5. Cierra la ventana después de un breve retraso
+						setTimeout(() => {
+							nw.close();
+						}, 500);
+					};
+				}
+			} else {
+				alert_toast("No se pudo obtener el código de factura para imprimir.", 'error');
+			}
+		});
+		
 		$('.select2').select2()
 		if ('<?php echo isset($_GET['id']) ? 1 : 0 ?>' == 0)
 			generate_code();
@@ -442,15 +498,10 @@ if (isset($id)) {
 				},
 				success: function(resp) {
 					if (typeof resp == 'object' && resp.status == 'success') {
-						var nw = window.open("./invoice/print.php?id=" + resp.id, "_blank", "width=700,height=500")
-						setTimeout(() => {
-							nw.print()
-							setTimeout(() => {
-								nw.close()
-								end_loader();
-								location.replace('./?page=invoice/manage&id=' + resp.id_encrypt)
-							}, 500)
-						}, 500)
+						alert_toast("Factura guardada exitosamente.", 'success'); // Mensaje de éxito
+						end_loader();
+						// Redirige al índice de facturas (index.php)
+						location.replace('./?page=invoice');
 					} else if (resp.status == 'failed' && !!resp.msg) {
 						var el = $('<div>')
 						el.addClass("alert alert-danger err-msg").text(resp.msg)
