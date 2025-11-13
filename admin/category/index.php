@@ -86,7 +86,23 @@
 		$('.delete_data').click(function() {
 			_conf("¿Estás seguro de eliminar esta categoría permanentemente?", "delete_category", [$(this).attr('data-id')])
 		})
-		$('.table').dataTable();
+		$('.table').dataTable({
+			// AÑADIR ESTA CONFIGURACIÓN DE LENGUAJE
+			"language": {
+				"lengthMenu": "Mostrar _MENU_ entradas", // Show _MENU_ entries
+				"search": "Buscar:", // Search:
+				"info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+				"infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+				"infoFiltered": "(filtrado de _MAX_ entradas totales)",
+				"paginate": {
+					"first": "Primero",
+					"last": "Último",
+					"next": "Siguiente",
+					"previous": "Anterior"
+				},
+				"zeroRecords": "No se encontraron registros coincidentes"
+			}
+		});
 		$('#uni_modal').on('shown.bs.modal', function() {
 			$('.summernote').summernote({
 				height: 200,
