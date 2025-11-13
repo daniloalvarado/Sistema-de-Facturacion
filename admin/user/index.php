@@ -24,11 +24,11 @@ foreach($user->fetch_array() as $k =>$v){
 					<input type="text" name="lastname" id="lastname" class="form-control" value="<?php echo isset($meta['lastname']) ? $meta['lastname']: '' ?>" required>
 				</div>
 				<div class="form-group">
-					<label for="username">Username</label>
+					<label for="username">Usuario</label>
 					<input type="text" name="username" id="username" class="form-control" value="<?php echo isset($meta['username']) ? $meta['username']: '' ?>" required  autocomplete="off">
 				</div>
 				<div class="form-group">
-					<label for="password">Password</label>
+					<label for="password">Contraseña</label>
 					<input type="password" name="password" id="password" class="form-control" value="" autocomplete="off">
 					<small><i>Deja en blanco si no quieres cambiar tu contraseña</i></small>
 				</div>
@@ -87,11 +87,10 @@ foreach($user->fetch_array() as $k =>$v){
 				if(resp ==1){
 					location.reload()
 				}else{
-					$('#msg').html('<div class="alert alert-danger">Username already exist</div>')
+					$('#msg').html('<div class="alert alert-danger">Este usuario ya existe!</div>')
 					end_loader()
 				}
 			}
 		})
 	})
-
 </script>
