@@ -52,7 +52,7 @@ Class Users extends DBConnection {
 		}else{
 			$qry = $this->conn->query("UPDATE users set $data where id = {$id}");
 			if($qry){
-				$this->settings->set_flashdata('success','User Details successfully updated.');
+				$this->settings->set_flashdata('success','Usuario Actualizado!');
 				foreach($_POST as $k => $v){
 					if($k != 'id'){
 						if(!empty($data)) $data .=" , ";
@@ -105,7 +105,7 @@ Class Users extends DBConnection {
 			$save = $this->conn->query($sql);
 
 			if($save){
-			$this->settings->set_flashdata('success','User Details successfully updated.');
+			$this->settings->set_flashdata('success','Usuario Actualizado!');
 			foreach($_POST as $k => $v){
 				if(!in_array($k,array('id','password'))){
 					if(!empty($data)) $data .=" , ";
@@ -148,7 +148,7 @@ Class Users extends DBConnection {
 			$save = $this->conn->query($sql);
 
 			if($save){
-			$this->settings->set_flashdata('success','User Details successfully updated.');
+			$this->settings->set_flashdata('success','Usuario Actualizado!');
 			foreach($_POST as $k => $v){
 				if(!in_array($k,array('id','password'))){
 					if(!empty($data)) $data .=" , ";
