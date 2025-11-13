@@ -67,7 +67,7 @@ class SystemSettings extends DBConnection{
 		}
 		
 		$update = $this->update_system_info();
-		$flash = $this->set_flashdata('success','System Info Successfully Updated.');
+		$flash = $this->set_flashdata('success','Información del sistema actualizada con éxito.');
 		if($update && $flash){
 			// var_dump($_SESSION);
 			return true;
