@@ -43,7 +43,7 @@ $(document).ready(function () {
 						location.replace(_base_url_ + 'admin');
 					} else if (resp.status == 'incorrect') {
 						var _frm = $('#login-frm')
-						var _msg = "<div class='alert alert-danger text-white err_msg'><i class='fa fa-exclamation-triangle'></i> Username o password incorrecto</div>"
+						var _msg = "<div class='alert alert-danger text-white err_msg'><i class='fa fa-exclamation-triangle'></i> Usuario o contraseña incorrectos</div>"
 						_frm.prepend(_msg)
 						_frm.find('input').addClass('is-invalid')
 						$('[name="username"]').focus()
