@@ -209,7 +209,8 @@ if (isset($id)) {
 		<div class="card-footer">
 			<button class="btn btn-flat btn-sm btn-primary" form="invoice-form">Guardar</button>
 			<?php if (isset($id)): ?>
-				<button class="btn btn-flat btn-sm btn-success" type="button" id="download_invoice">
+				<button class="btn btn-flat btn-sm btn-success" type="button" id="download_invoice"
+					style="margin: 10px 0;">
 					<i class="fa fa-download"></i> Descargar Factura
 				</button>
 			<?php endif; ?>
