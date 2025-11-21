@@ -1,38 +1,5 @@
 <?php
 require('../../config.php');
-
-// --- INICIO SOLUCIÓN IMAGEN PARA MÓVIL ---
-// Función para convertir la imagen del logo a Base64
-// Esto evita que el PDF salga en blanco en Android por problemas de seguridad (CORS)
-function getLogoAsBase64($url) {
-    try {
-        // Intentamos obtener la imagen
-        // Si la URL es relativa (ej: /uploads/...), prepandemos el document root
-        $path = parse_url($url, PHP_URL_PATH);
-        $absolute_path = $_SERVER['DOCUMENT_ROOT'] . $path;
-
-        if(file_exists($absolute_path)){
-            $type = pathinfo($absolute_path, PATHINFO_EXTENSION);
-            $data = file_get_contents($absolute_path);
-            return 'data:image/' . $type . ';base64,' . base64_encode($data);
-        } 
-        // Si no encuentra ruta local, intentamos descargarla (si el server lo permite)
-        else {
-             $data = @file_get_contents($url);
-             if($data){
-                 return 'data:image/jpeg;base64,' . base64_encode($data);
-             }
-        }
-    } catch (Exception $e) {
-        // Si falla, retornamos la URL original y rezamos para que funcione
-    }
-    return $url; 
-}
-
-// Preparamos el logo
-$logo_url_original = validate_image($_settings->info('logo'));
-$logo_final = getLogoAsBase64($logo_url_original);
-// --- FIN SOLUCIÓN IMAGEN ---
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -41,32 +8,32 @@ $logo_final = getLogoAsBase64($logo_url_original);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Factura - <?php echo isset($invoice_code) ? $invoice_code : ''; ?></title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
-        /* TUS ESTILOS ORIGINALES CON PEQUEÑOS AJUSTES PARA PDF */
-        @media print {
-            @page { margin: 0; size: A4; } /* Margen 0 para que html2pdf controle */
-            body { margin: 0; padding: 0; }
-            .no-print { display: none; }
+        /* Estilos Generales (Fuera de @media print para que la librería los lea bien) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Arial', 'Helvetica', sans-serif;
             font-size: 11pt;
             line-height: 1.4;
             color: #333;
-            background: #fff;
+            background: #f0f2f5; /* Fondo gris suave para la web */
             padding: 20px;
         }
         
+        /* El contenedor principal que se convertirá en PDF */
         .invoice-container {
             max-width: 800px;
             margin: 0 auto;
             background: white;
-            padding: 10px; /* Padding interno para que no corte bordes */
+            padding: 30px; /* Añadido padding interno */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Sombra visual solo para pantalla */
         }
         
         .invoice-header {
@@ -85,9 +52,13 @@ $logo_final = getLogoAsBase64($logo_url_original);
             letter-spacing: 2px;
         }
         
-        .header-info { display: table; width: 100%; }
+        .header-info {
+            display: table;
+            width: 100%;
+        }
         
-        .header-left, .header-right {
+        .header-left,
+        .header-right {
             display: table-cell;
             vertical-align: top;
             width: 50%;
@@ -103,21 +74,37 @@ $logo_final = getLogoAsBase64($logo_url_original);
             padding: 5px;
         }
         
-        .info-label { font-weight: bold; color: #555; font-size: 10pt; }
-        .info-value { color: #2c5aa0; font-weight: 600; font-size: 11pt; margin-left: 5px; }
-        .info-row { margin-bottom: 8px; line-height: 1.6; }
+        .info-label {
+            font-weight: bold;
+            color: #555;
+            font-size: 10pt;
+        }
         
-        .header-right { text-align: right; padding-left: 20px; }
+        .info-value {
+            color: #2c5aa0;
+            font-weight: 600;
+            font-size: 11pt;
+            margin-left: 5px;
+        }
+        
+        .info-row {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        
+        .header-right {
+            text-align: right;
+            padding-left: 20px;
+        }
         
         .invoice-table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .invoice-table thead {
-            background: #2c5aa0; /* Color sólido mejor para PDF */
+            background: linear-gradient(135deg, #2c5aa0 0%, #4a7dc9 100%);
             color: white;
         }
         
@@ -130,15 +117,30 @@ $logo_final = getLogoAsBase64($logo_url_original);
             letter-spacing: 0.5px;
         }
         
-        .invoice-table td { padding: 10px 8px; border-bottom: 1px solid #e0e0e0; }
-        .invoice-table tbody tr:last-child td { border-bottom: 2px solid #2c5aa0; }
+        .invoice-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .invoice-table tbody tr:last-child td {
+            border-bottom: 2px solid #2c5aa0;
+        }
         
         .text-center { text-align: center; }
         .text-right { text-align: right; }
         
-        .item-details { font-size: 9pt; color: #666; }
+        .item-details {
+            font-size: 9pt;
+            color: #666;
+        }
+        
         .item-details p { margin: 3px 0; }
-        .item-name { font-weight: 600; color: #333; font-size: 10pt; }
+        
+        .item-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 10pt;
+        }
         
         .category-badge {
             display: inline-block;
@@ -152,13 +154,26 @@ $logo_final = getLogoAsBase64($logo_url_original);
         
         .invoice-table tfoot { background: #f5f5f5; }
         .invoice-table tfoot tr { border-top: 1px solid #d0d0d0; }
-        .invoice-table tfoot th { padding: 10px 8px; font-size: 10pt; background: transparent; color: #333; }
         
-        .total-row { background: #2c5aa0 !important; color: white !important; }
-        .total-row th { color: white !important; font-size: 12pt !important; padding: 14px 8px !important; }
+        .invoice-table tfoot th {
+            padding: 10px 8px;
+            font-size: 10pt;
+            background: transparent;
+            color: #333;
+        }
         
-        .subtotal-row { background: #e3f2fd !important; }
-        .tax-row { background: #e3f2fd !important; }
+        .total-row {
+            background: linear-gradient(135deg, #2c5aa0 0%, #4a7dc9 100%) !important;
+            color: white !important;
+        }
+        
+        .total-row th {
+            color: white !important;
+            font-size: 12pt !important;
+            padding: 14px 8px !important;
+        }
+        
+        .subtotal-row, .tax-row { background: #e3f2fd !important; }
         
         .observations {
             margin-top: 30px;
@@ -167,8 +182,13 @@ $logo_final = getLogoAsBase64($logo_url_original);
             border-left: 4px solid #2c5aa0;
             border-radius: 4px;
         }
-        .observations-title { font-weight: bold; color: #2c5aa0; font-size: 11pt; margin-bottom: 10px; }
-        .observations-content { color: #555; line-height: 1.6; }
+        
+        .observations-title {
+            font-weight: bold;
+            color: #2c5aa0;
+            font-size: 11pt;
+            margin-bottom: 10px;
+        }
         
         .footer-note {
             margin-top: 30px;
@@ -179,6 +199,7 @@ $logo_final = getLogoAsBase64($logo_url_original);
             border-top: 1px solid #e0e0e0;
         }
         
+        /* Botón Flotante */
         .print-button {
             position: fixed;
             top: 20px;
@@ -191,15 +212,24 @@ $logo_final = getLogoAsBase64($logo_url_original);
             cursor: pointer;
             font-size: 10pt;
             font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             transition: all 0.3s;
-            z-index: 9999; 
+            z-index: 1000;
         }
         
         .print-button:hover {
             background: #1e3a6e;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        /* Ocultar botón al generar PDF */
+        .hide-on-pdf {
+            display: none !important;
+        }
+
+        /* Estilos específicos para que html2pdf renderice bien */
+        .pdf-content {
+            background: #fff;
         }
     </style>
 </head>
@@ -216,20 +246,19 @@ $logo_final = getLogoAsBase64($logo_url_original);
         }
     }
     $tax_rate = isset($tax_rate) ? $tax_rate : $_settings->info('tax_rate');
-    // Aseguramos que haya un código de factura para el nombre del archivo
-    $safe_invoice_code = isset($invoice_code) ? $invoice_code : 'DOC';
     ?>
     
-    <button class="print-button no-print" id="btn-download">🖨️ Descargar PDF</button>
+    <button id="btnDownload" class="print-button" onclick="generatePDF()">
+        📥 Descargar PDF
+    </button>
     
-    <div class="invoice-container" id="invoice-content">
+    <div class="invoice-container" id="invoice-to-pdf">
         <h1 class="invoice-title">Factura</h1>
         
         <div class="invoice-header">
             <div class="header-info">
                 <div class="header-left">
-                    <img src="<?php echo $logo_final; ?>" class="company-logo" alt="Logo">
-                    
+                    <img src="<?php echo validate_image($_settings->info('logo')) ?>" class="company-logo" alt="Logo">
                     <div class="info-row">
                         <span class="info-label">Facturado por:</span>
                         <span class="info-value"><?php echo $_settings->info('name') ?></span>
@@ -325,40 +354,31 @@ $logo_final = getLogoAsBase64($logo_url_original);
     </div>
     
     <script>
-        document.getElementById('btn-download').addEventListener('click', function() {
-            // Referencias
-            const element = document.getElementById('invoice-content');
-            const btn = document.getElementById('btn-download');
-            const originalText = btn.innerText;
+        function generatePDF() {
+            // Seleccionamos el elemento que queremos convertir
+            const element = document.getElementById('invoice-to-pdf');
             
-            // Feedback visual
-            btn.innerText = 'Generando...';
+            // Ocultar el botón temporalmente para que no salga raro
+            const btn = document.getElementById('btnDownload');
+            btn.innerHTML = '⏳ Generando...';
             btn.disabled = true;
 
-            // Configuración
-            var opt = {
-                margin:       [0.3, 0.3, 0.3, 0.3], // Márgenes (arriba, izq, abajo, der)
-                filename:     'Factura-<?php echo $safe_invoice_code; ?>.pdf',
+            // Configuración del PDF
+            const opt = {
+                margin:       [0.5, 0.5, 0.5, 0.5], // Margenes en pulgadas
+                filename:     'Factura-<?php echo $invoice_code ?>.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { 
-                    scale: 2, // Mejor calidad
-                    useCORS: true, // Permitir imágenes externas si la base64 falla
-                    scrollY: 0
-                },
+                html2canvas:  { scale: 2, logging: false, useCORS: true },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
 
-            // Ejecutar
-            html2pdf().set(opt).from(element).save().then(function(){
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }).catch(function(err){
-                console.error(err);
-                alert("Hubo un error al generar el PDF: " + err.message);
-                btn.innerText = originalText;
+            // Generar y guardar
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restaurar el botón
+                btn.innerHTML = '📥 Descargar PDF';
                 btn.disabled = false;
             });
-        });
+        }
     </script>
 </body>
 </html>
