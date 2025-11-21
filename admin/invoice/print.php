@@ -7,11 +7,23 @@ require('../../config.php');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Factura - <?php echo isset($invoice_code) ? $invoice_code : ''; ?></title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <style>
-        /* Estilos Generales (Fuera de @media print para que la librería los lea bien) */
+        @media print {
+            @page {
+                margin: 1cm;
+                size: A4;
+            }
+            
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            
+            .no-print {
+                display: none;
+            }
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -23,17 +35,14 @@ require('../../config.php');
             font-size: 11pt;
             line-height: 1.4;
             color: #333;
-            background: #f0f2f5; /* Fondo gris suave para la web */
+            background: #fff;
             padding: 20px;
         }
         
-        /* El contenedor principal que se convertirá en PDF */
         .invoice-container {
             max-width: 800px;
             margin: 0 auto;
             background: white;
-            padding: 30px; /* Añadido padding interno */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Sombra visual solo para pantalla */
         }
         
         .invoice-header {
@@ -101,6 +110,7 @@ require('../../config.php');
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .invoice-table thead {
@@ -122,19 +132,30 @@ require('../../config.php');
             border-bottom: 1px solid #e0e0e0;
         }
         
+        .invoice-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
         .invoice-table tbody tr:last-child td {
             border-bottom: 2px solid #2c5aa0;
         }
         
-        .text-center { text-align: center; }
-        .text-right { text-align: right; }
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
         
         .item-details {
             font-size: 9pt;
             color: #666;
         }
         
-        .item-details p { margin: 3px 0; }
+        .item-details p {
+            margin: 3px 0;
+        }
         
         .item-name {
             font-weight: 600;
@@ -152,8 +173,13 @@ require('../../config.php');
             font-weight: 600;
         }
         
-        .invoice-table tfoot { background: #f5f5f5; }
-        .invoice-table tfoot tr { border-top: 1px solid #d0d0d0; }
+        .invoice-table tfoot {
+            background: #f5f5f5;
+        }
+        
+        .invoice-table tfoot tr {
+            border-top: 1px solid #d0d0d0;
+        }
         
         .invoice-table tfoot th {
             padding: 10px 8px;
@@ -173,7 +199,13 @@ require('../../config.php');
             padding: 14px 8px !important;
         }
         
-        .subtotal-row, .tax-row { background: #e3f2fd !important; }
+        .subtotal-row {
+            background: #e3f2fd !important;
+        }
+        
+        .tax-row {
+            background: #e3f2fd !important;
+        }
         
         .observations {
             margin-top: 30px;
@@ -190,6 +222,11 @@ require('../../config.php');
             margin-bottom: 10px;
         }
         
+        .observations-content {
+            color: #555;
+            line-height: 1.6;
+        }
+        
         .footer-note {
             margin-top: 30px;
             text-align: center;
@@ -199,12 +236,19 @@ require('../../config.php');
             border-top: 1px solid #e0e0e0;
         }
         
-        /* Botón Flotante */
-        .print-button {
+        /* Botones de acción mejorados para móvil */
+        .action-buttons {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 24px;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .action-button {
+            padding: 12px 20px;
             background: #2c5aa0;
             color: white;
             border: none;
@@ -212,24 +256,107 @@ require('../../config.php');
             cursor: pointer;
             font-size: 10pt;
             font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             transition: all 0.3s;
-            z-index: 1000;
+            text-align: center;
+            text-decoration: none;
+            display: block;
         }
         
-        .print-button:hover {
+        .action-button:hover {
             background: #1e3a6e;
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
         
-        /* Ocultar botón al generar PDF */
-        .hide-on-pdf {
-            display: none !important;
+        .action-button.secondary {
+            background: #4caf50;
         }
-
-        /* Estilos específicos para que html2pdf renderice bien */
-        .pdf-content {
-            background: #fff;
+        
+        .action-button.secondary:hover {
+            background: #388e3c;
+        }
+        
+        /* Estilos responsivos para móvil */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+                font-size: 10pt;
+            }
+            
+            .invoice-title {
+                font-size: 20pt;
+                margin-bottom: 15px;
+            }
+            
+            .header-info {
+                display: block;
+            }
+            
+            .header-left,
+            .header-right {
+                display: block;
+                width: 100%;
+                text-align: left;
+            }
+            
+            .header-right {
+                margin-top: 15px;
+                padding-left: 0;
+            }
+            
+            .company-logo {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .invoice-table {
+                font-size: 9pt;
+            }
+            
+            .invoice-table th,
+            .invoice-table td {
+                padding: 8px 4px;
+            }
+            
+            .action-buttons {
+                position: fixed;
+                bottom: 10px;
+                top: auto;
+                right: 10px;
+                left: 10px;
+                flex-direction: row;
+            }
+            
+            .action-button {
+                flex: 1;
+                font-size: 9pt;
+                padding: 10px;
+            }
+        }
+        
+        @media print {
+            .action-buttons {
+                display: none;
+            }
+        }
+        
+        /* Loader para indicar que está procesando */
+        .loader {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 9999;
+        }
+        
+        .loader.active {
+            display: block;
         }
     </style>
 </head>
@@ -248,11 +375,16 @@ require('../../config.php');
     $tax_rate = isset($tax_rate) ? $tax_rate : $_settings->info('tax_rate');
     ?>
     
-    <button id="btnDownload" class="print-button" onclick="generatePDF()">
-        📥 Descargar PDF
-    </button>
+    <div class="loader" id="loader">
+        <div>Generando PDF...</div>
+    </div>
     
-    <div class="invoice-container" id="invoice-to-pdf">
+    <div class="action-buttons no-print">
+        <button class="action-button" onclick="printInvoice()">🖨️ Imprimir</button>
+        <button class="action-button secondary" onclick="shareInvoice()">📤 Compartir</button>
+    </div>
+    
+    <div class="invoice-container">
         <h1 class="invoice-title">Factura</h1>
         
         <div class="invoice-header">
@@ -354,29 +486,24 @@ require('../../config.php');
     </div>
     
     <script>
-        function generatePDF() {
-            // Seleccionamos el elemento que queremos convertir
-            const element = document.getElementById('invoice-to-pdf');
-            
-            // Ocultar el botón temporalmente para que no salga raro
-            const btn = document.getElementById('btnDownload');
-            btn.innerHTML = '⏳ Generando...';
-            btn.disabled = true;
-
-            // Configuración del PDF
-            const opt = {
-                margin:       [0.5, 0.5, 0.5, 0.5], // Margenes en pulgadas
-                filename:     'Factura-<?php echo $invoice_code ?>.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, logging: false, useCORS: true },
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-            };
-
-            // Generar y guardar
-            html2pdf().set(opt).from(element).save().then(() => {
-                // Restaurar el botón
-                btn.innerHTML = '📥 Descargar PDF';
-                btn.disabled = false;
+        function printInvoice() {
+            window.print();
+        }
+        
+        // Detectar si es móvil para mostrar mensaje adicional
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Si es móvil y intenta imprimir, sugerir descargar PDF
+        if (isMobile()) {
+            const printBtn = document.querySelector('.action-buttons .action-button');
+            printBtn.addEventListener('click', function(e) {
+                if (!confirm('En dispositivos móviles, es mejor usar el botón "Descargar PDF". ¿Desea continuar con imprimir?')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
             });
         }
     </script>
