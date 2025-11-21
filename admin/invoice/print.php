@@ -28,7 +28,7 @@ require('../../config.php');
             margin: 0 auto;
             background: white;
             padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 100px;
         }
         
         .invoice-title {
@@ -178,7 +178,7 @@ require('../../config.php');
             border-top: 1px solid #e0e0e0;
         }
         
-        /* Botones de acción */
+        /* Botones de acción FIJOS */
         .action-bar {
             position: fixed;
             bottom: 0;
@@ -186,40 +186,69 @@ require('../../config.php');
             right: 0;
             background: white;
             padding: 10px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            gap: 8px;
             z-index: 1000;
         }
         
         .btn {
-            flex: 1;
-            padding: 12px;
+            padding: 14px;
             border: none;
-            border-radius: 5px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
-        .btn-primary {
-            background: #2c5aa0;
-            color: white;
-        }
-        
-        .btn-success {
+        .btn-screenshot {
             background: #4caf50;
             color: white;
         }
         
-        .btn-warning {
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        
+        .btn-email {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .btn-share {
             background: #ff9800;
             color: white;
         }
         
-        /* Modal de opciones */
-        .modal {
+        /* Alerta de instrucciones */
+        .alert-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 3000;
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .alert-box.active {
+            display: block;
+        }
+        
+        .alert-overlay {
             display: none;
             position: fixed;
             top: 0;
@@ -227,70 +256,64 @@ require('../../config.php');
             right: 0;
             bottom: 0;
             background: rgba(0,0,0,0.7);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
+            z-index: 2500;
         }
         
-        .modal.active {
-            display: flex;
+        .alert-overlay.active {
+            display: block;
         }
         
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        
-        .modal-title {
-            font-size: 18px;
+        .alert-title {
+            font-size: 20px;
             font-weight: bold;
             color: #2c5aa0;
             margin-bottom: 15px;
+            text-align: center;
         }
         
-        .modal-option {
-            padding: 15px;
-            margin: 10px 0;
+        .alert-content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .alert-step {
             background: #f5f5f5;
-            border-radius: 5px;
-            cursor: pointer;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
         }
         
-        .modal-option:active {
-            background: #e0e0e0;
-        }
-        
-        .modal-option-title {
-            font-weight: bold;
+        .alert-step strong {
+            color: #2c5aa0;
+            display: block;
             margin-bottom: 5px;
         }
         
-        .modal-option-desc {
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .close-modal {
-            margin-top: 15px;
-            padding: 10px;
-            background: #ccc;
+        .close-alert {
+            margin-top: 20px;
+            padding: 12px;
+            background: #2c5aa0;
+            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             width: 100%;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-        }
-        
-        /* Espaciado inferior para botones */
-        .invoice-container {
-            margin-bottom: 80px;
         }
         
         /* Responsive */
         @media screen and (max-width: 600px) {
+            body {
+                padding: 5px;
+            }
+            
+            .invoice-container {
+                padding: 15px;
+            }
+            
             .header-row {
                 flex-direction: column;
             }
@@ -302,24 +325,6 @@ require('../../config.php');
             .invoice-table th,
             .invoice-table td {
                 padding: 6px 3px;
-            }
-        }
-        
-        /* Estilos para impresión */
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            
-            .action-bar,
-            .modal {
-                display: none !important;
-            }
-            
-            .invoice-container {
-                box-shadow: none;
-                margin-bottom: 0;
             }
         }
     </style>
@@ -339,7 +344,7 @@ require('../../config.php');
     $tax_rate = isset($tax_rate) ? $tax_rate : $_settings->info('tax_rate');
     ?>
     
-    <div class="invoice-container">
+    <div class="invoice-container" id="factura">
         <h1 class="invoice-title">FACTURA</h1>
         
         <div class="header-row">
@@ -434,110 +439,133 @@ require('../../config.php');
     
     <!-- Barra de acciones -->
     <div class="action-bar">
-        <button class="btn btn-success" onclick="compartir()">📤 Compartir</button>
-        <button class="btn btn-warning" onclick="mostrarOpciones()">📥 Guardar</button>
-        <button class="btn btn-primary" onclick="imprimirRapido()">🖨️ Imprimir</button>
+        <button class="btn btn-screenshot" onclick="mostrarInstrucciones()">
+            📸 Guardar como Imagen
+        </button>
+        <button class="btn btn-whatsapp" onclick="enviarWhatsApp()">
+            💬 Enviar por WhatsApp
+        </button>
+        <button class="btn btn-email" onclick="enviarEmail()">
+            📧 Enviar por Email
+        </button>
+        <button class="btn btn-share" onclick="compartirLink()">
+            🔗 Copiar Link
+        </button>
     </div>
     
-    <!-- Modal de opciones -->
-    <div class="modal" id="modalOpciones">
-        <div class="modal-content">
-            <div class="modal-title">¿Cómo quieres guardar?</div>
-            
-            <div class="modal-option" onclick="capturarPantalla()">
-                <div class="modal-option-title">📸 Captura de Pantalla</div>
-                <div class="modal-option-desc">Toma una captura y guárdala en tu galería (Recomendado para móvil)</div>
+    <!-- Overlay -->
+    <div class="alert-overlay" id="overlay" onclick="cerrarAlerta()"></div>
+    
+    <!-- Alerta de instrucciones -->
+    <div class="alert-box" id="alertBox">
+        <div class="alert-title">📸 Cómo Guardar la Factura</div>
+        <div class="alert-content">
+            <div class="alert-step">
+                <strong>📱 Para Android:</strong>
+                1. Presiona: Botón de BAJAR VOLUMEN + ENCENDIDO al mismo tiempo<br>
+                2. Se guardará en tu Galería/Fotos<br>
+                3. Opcional: Desplázate hacia abajo para capturar todo
             </div>
             
-            <div class="modal-option" onclick="imprimirAPDF()">
-                <div class="modal-option-title">📄 Guardar como PDF</div>
-                <div class="modal-option-desc">Usa la función de imprimir del navegador</div>
+            <div class="alert-step">
+                <strong>🍎 Para iPhone:</strong>
+                1. Presiona: Botón LATERAL + SUBIR VOLUMEN al mismo tiempo<br>
+                2. Se guardará en tu app de Fotos<br>
+                3. Opcional: Toca la miniatura y usa "Página completa"
             </div>
             
-            <div class="modal-option" onclick="enviarWhatsApp()">
-                <div class="modal-option-title">💬 Enviar por WhatsApp</div>
-                <div class="modal-option-desc">Comparte este link por WhatsApp</div>
+            <div class="alert-step">
+                <strong>💡 Consejo:</strong>
+                • Puedes hacer varias capturas si la factura es larga<br>
+                • Después puedes editar o recortar la imagen<br>
+                • También puedes compartirla directamente desde tu galería
             </div>
-            
-            <div class="modal-option" onclick="enviarEmail()">
-                <div class="modal-option-title">📧 Enviar por Email</div>
-                <div class="modal-option-desc">Abre tu app de correo para enviar</div>
-            </div>
-            
-            <button class="close-modal" onclick="cerrarModal()">Cancelar</button>
         </div>
+        <button class="close-alert" onclick="cerrarAlerta()">Entendido ✓</button>
     </div>
     
     <script>
-        function mostrarOpciones() {
-            document.getElementById('modalOpciones').classList.add('active');
+        function mostrarInstrucciones() {
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('alertBox').classList.add('active');
         }
         
-        function cerrarModal() {
-            document.getElementById('modalOpciones').classList.remove('active');
-        }
-        
-        function imprimirRapido() {
-            window.print();
-        }
-        
-        function imprimirAPDF() {
-            cerrarModal();
-            alert('📱 INSTRUCCIONES:\n\n' +
-                  '1. Se abrirá la ventana de imprimir\n' +
-                  '2. Selecciona "Guardar como PDF"\n' +
-                  '3. Elige dónde guardar\n\n' +
-                  '✅ En iPhone: Pellizca la vista previa para crear PDF');
-            setTimeout(() => window.print(), 500);
-        }
-        
-        function compartir() {
-            const titulo = 'Factura <?php echo $invoice_code; ?>';
-            const texto = 'Cliente: <?php echo $customer_name; ?>\nTotal: S/ <?php echo number_format($total_amount, 2); ?>';
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: titulo,
-                    text: texto,
-                    url: window.location.href
-                }).catch(err => console.log('Error al compartir:', err));
-            } else {
-                alert('Link copiado para compartir:\n' + window.location.href);
-                copiarTexto(window.location.href);
-            }
-        }
-        
-        function capturarPantalla() {
-            cerrarModal();
-            alert('📸 CÓMO TOMAR CAPTURA:\n\n' +
-                  '📱 Android: Botón bajar volumen + encendido\n' +
-                  '🍎 iPhone: Botón lateral + subir volumen\n\n' +
-                  '💡 TIP: Desplázate hacia abajo para capturar todo');
+        function cerrarAlerta() {
+            document.getElementById('overlay').classList.remove('active');
+            document.getElementById('alertBox').classList.remove('active');
         }
         
         function enviarWhatsApp() {
-            const texto = encodeURIComponent('Factura <?php echo $invoice_code; ?>\n' + window.location.href);
+            const texto = encodeURIComponent(
+                '📄 *Factura <?php echo $invoice_code; ?>*\n\n' +
+                '👤 Cliente: <?php echo $customer_name; ?>\n' +
+                '💰 Total: S/ <?php echo number_format($total_amount, 2); ?>\n\n' +
+                '🔗 Ver factura completa:\n' + window.location.href
+            );
             window.open('https://wa.me/?text=' + texto, '_blank');
-            cerrarModal();
         }
         
         function enviarEmail() {
-            const asunto = encodeURIComponent('Factura <?php echo $invoice_code; ?>');
-            const cuerpo = encodeURIComponent('Hola,\n\nAdjunto el enlace a la factura:\n' + window.location.href + '\n\nSaludos.');
+            const asunto = encodeURIComponent('Factura <?php echo $invoice_code; ?> - <?php echo $customer_name; ?>');
+            const cuerpo = encodeURIComponent(
+                'Estimado/a,\n\n' +
+                'Le envío la factura con los siguientes detalles:\n\n' +
+                'Código de Factura: <?php echo $invoice_code; ?>\n' +
+                'Cliente: <?php echo $customer_name; ?>\n' +
+                'Total: S/ <?php echo number_format($total_amount, 2); ?>\n\n' +
+                'Puede ver la factura completa en el siguiente enlace:\n' +
+                window.location.href + '\n\n' +
+                'Saludos cordiales.'
+            );
             window.location.href = 'mailto:?subject=' + asunto + '&body=' + cuerpo;
-            cerrarModal();
         }
         
-        function copiarTexto(texto) {
+        function compartirLink() {
+            const url = window.location.href;
+            
+            // Intentar usar la API de compartir nativa
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Factura <?php echo $invoice_code; ?>',
+                    text: 'Cliente: <?php echo $customer_name; ?> | Total: S/ <?php echo number_format($total_amount, 2); ?>',
+                    url: url
+                }).then(() => {
+                    console.log('Compartido exitosamente');
+                }).catch(err => {
+                    copiarAlPortapapeles(url);
+                });
+            } else {
+                copiarAlPortapapeles(url);
+            }
+        }
+        
+        function copiarAlPortapapeles(texto) {
+            // Crear elemento temporal
             const el = document.createElement('textarea');
             el.value = texto;
             el.style.position = 'fixed';
-            el.style.opacity = '0';
+            el.style.left = '-9999px';
             document.body.appendChild(el);
+            
+            // Seleccionar y copiar
             el.select();
-            document.execCommand('copy');
+            el.setSelectionRange(0, 99999);
+            
+            try {
+                document.execCommand('copy');
+                alert('✅ Link copiado al portapapeles!\n\nPuedes pegarlo en WhatsApp, Email, etc.');
+            } catch (err) {
+                // Si falla, mostrar el link
+                prompt('Copia este link:', texto);
+            }
+            
             document.body.removeChild(el);
         }
+        
+        // Prevenir que se cierre el menú al tocar dentro del alert
+        document.getElementById('alertBox').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
     </script>
 </body>
 </html>
