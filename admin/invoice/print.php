@@ -1,4 +1,3 @@
-
 <?php
 require('../../config.php');
 ?>
@@ -115,7 +114,7 @@ require('../../config.php');
         }
         
         .invoice-table thead {
-            background: #2c5aa0;
+            background: linear-gradient(135deg, #2c5aa0 0%, #4a7dc9 100%);
             color: white;
         }
         
@@ -190,7 +189,7 @@ require('../../config.php');
         }
         
         .total-row {
-            background: #2c5aa0 !important;
+            background: linear-gradient(135deg, #2c5aa0 0%, #4a7dc9 100%) !important;
             color: white !important;
         }
         
@@ -237,88 +236,30 @@ require('../../config.php');
             border-top: 1px solid #e0e0e0;
         }
         
-        .action-buttons {
+        .print-button {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
             right: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 1000;
-        }
-        
-        .btn {
             padding: 12px 24px;
+            background: #2c5aa0;
+            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 10pt;
             font-weight: 600;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             transition: all 0.3s;
-            text-decoration: none;
-            display: block;
-            text-align: center;
         }
         
-        .btn:hover {
+        .print-button:hover {
+            background: #1e3a6e;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
         
-        .btn-download {
-            background: #4caf50;
-            color: white;
-        }
-        
-        .btn-print {
-            background: #2c5aa0;
-            color: white;
-        }
-        
-        @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .invoice-title {
-                font-size: 20pt;
-            }
-            
-            .header-info {
-                display: block;
-            }
-            
-            .header-left,
-            .header-right {
-                display: block;
-                width: 100%;
-                text-align: left;
-            }
-            
-            .header-right {
-                margin-top: 15px;
-                padding-left: 0;
-            }
-            
-            .action-buttons {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                flex-direction: row;
-                padding: 10px;
-                background: white;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            }
-            
-            .btn {
-                flex: 1;
-            }
-        }
-        
         @media print {
-            .action-buttons {
+            .print-button {
                 display: none;
             }
         }
@@ -339,15 +280,7 @@ require('../../config.php');
     $tax_rate = isset($tax_rate) ? $tax_rate : $_settings->info('tax_rate');
     ?>
     
-    <div class="action-buttons no-print">
-        <a href="descargar_pdf.php?id=<?php echo $_GET['id']; ?>&type=<?php echo $type; ?>" 
-           class="btn btn-download">
-            📥 Descargar PDF
-        </a>
-        <button class="btn btn-print" onclick="window.print()">
-            🖨️ Imprimir
-        </button>
-    </div>
+    <button class="print-button no-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
     
     <div class="invoice-container">
         <h1 class="invoice-title">Factura</h1>
@@ -449,5 +382,12 @@ require('../../config.php');
             Documento generado el <?php echo date("d/m/Y H:i:s") ?>
         </div>
     </div>
+    
+    <script>
+        // Auto-focus en el botón de imprimir para fácil acceso con Enter
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.print-button')?.focus();
+        });
+    </script>
 </body>
 </html>
