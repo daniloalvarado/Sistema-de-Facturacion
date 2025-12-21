@@ -6,5 +6,5 @@ Gestión de catálogos : Organización de productos y servicios en categorías c
 Gestión de Productos y Servicios: Crea, edita y elimina los productos y servicios de tu preferencia.<br>
 Configuración del sistema : Gestión de la información de la empresa, los tipos impositivos y los perfiles de usuario.
 <br><br>
-<img src="https://raw.githubusercontent.com/daniloalvarado/Sistema-de-Facturacion/main/upload/project-W3.png" 
+<img src="https://raw.githubusercontent.com/daniloalvarado/Sistema-de-Facturacion/main/uploads/project-W3.png" 
      alt="Sistema de Factura">
